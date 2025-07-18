@@ -1,20 +1,22 @@
+/* eslint-disable no-console */
 import { Server } from "http";
 
 import mongoose from "mongoose";
 import { app } from "./app";
-import { promise } from "zod";
+import { envVars } from "./config/env";
+
 
 let server: Server;
 
 const startServer = () => {
   try {
     mongoose.connect(
-      `${process.env.DATABASE_URL}`
+      `${envVars.DATABASE_URL}`
     );
 
     console.log("Mongodb connected");
 
-    server = app.listen(5000, () => {
+    server = app.listen(envVars.PORT, () => {
       console.log("The server is running on the port 5000");
     });
   } catch (err) {
