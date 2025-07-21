@@ -4,7 +4,9 @@ import { IAuthProvider, IIsActive, IRole, IUser } from "./user.interface";
 const authSchema = new Schema<IAuthProvider>({
     provider: {type:String, required: true},
     providerId: {type: String, required:true}
-
+},{
+  versionKey:false,
+  _id: false
 })
 const userSchema = new Schema<IUser>({
   name: {
@@ -47,6 +49,9 @@ const userSchema = new Schema<IUser>({
     default: false,
   },
   auths: [authSchema],
+}, {
+  timestamps: true,
+  versionKey:false
 });
 
 export const USER = model<IUser>("USER", userSchema)
