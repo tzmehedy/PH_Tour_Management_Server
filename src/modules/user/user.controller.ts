@@ -10,7 +10,10 @@ import { sendResponse } from "../../utils/sendResponse";
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    
     const user = await userService.createUser(req.body);
+
+
     sendResponse(res, {
       statusCode: httpStatusCodes.CREATED,
       success: true,

@@ -7,7 +7,7 @@ export enum IRole{
 }
 
 export interface IAuthProvider{
-    provider: string;
+    provider: "Google" | "Credentials";
     providerId: string;
 }
 
