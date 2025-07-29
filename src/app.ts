@@ -3,13 +3,14 @@ import cors from "cors"
 import { router } from "./app/routes";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import notFoundRouteHandler from "./app/middlewares/notFoundRouteHandler";
-
+import cookieParser from "cookie-parser"
 
 
 export const app = express();
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 
 app.use("/api/v1/", router)
 
