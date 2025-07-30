@@ -65,8 +65,27 @@ const logOut = catchAsync(
   }
 );
 
+const changedPassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user
+    const oldPassword = req.body.oldPassword
+    const newPassword = req.body.newPassword 
+
+   await AuthServices.changedPassword(decodedToken, oldPassword, newPassword)
+
+    sendResponse(res, {
+      statusCode: httpStatusCodes.OK,
+      success: true,
+      message: "Password Changed Successfully",
+      data: null,
+    });
+  }
+);
+
 export const AuthControllers = {
   credentialsLogin,
   getNewAccessToken,
   logOut,
+  changedPassword
 };
