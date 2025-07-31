@@ -2,8 +2,13 @@
 import { Server } from "http";
 
 import mongoose from "mongoose";
+
 import { app } from "./app";
-import { envVars } from "./config/env";
+import { envVars } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+
+
+
 
 
 let server: Server;
@@ -23,7 +28,14 @@ const startServer = () => {
     console.log(err);
   }
 };
-startServer();
+
+(
+  async()=>{
+    await startServer();
+    await seedSuperAdmin();
+  }
+)()
+
 
 process.on("SIGTERM", () => {
   console.log("Signal termination error ...shut down");
