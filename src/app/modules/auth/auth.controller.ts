@@ -8,20 +8,45 @@ import { setCookies } from '../../utils/setCookies';
 import AppError from '../../errorHelpers/appError';
 import { createUserTokens } from '../../utils/userToken';
 import { envVars } from '../../config/env';
+import passport from 'passport';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const credentialsLogin = catchAsync(async(req:Request, res:Response, next: NextFunction) =>{
 
-    const loginInfo = await AuthServices.credentialsLogin(req.body)
+    // const loginInfo = await AuthServices.credentialsLogin(req.body)
 
-    setCookies(res, loginInfo)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    passport.authenticate("local", async(err:any, user:any, info:any )=>{
 
-    sendResponse(res, {
-      statusCode: httpStatusCodes.OK,
-      success: true,
-      message: "User successfully login",
-      data: loginInfo,
-    });
+      if(err){
+        return next(new AppError(httpStatusCodes.BAD_REQUEST, err));
+      }
+
+      // if(!user){
+      //   return next(new AppError(httpStatusCodes.NOT_FOUND, "User Not found from authControllers"))
+      // }
+
+      const userTokens = await createUserTokens(user)
+
+      setCookies(res, userTokens);
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const {password :pass, ...rest} = user.toObject()
+
+      sendResponse(res, {
+        statusCode: httpStatusCodes.OK,
+        success: true,
+        message: "User successfully login",
+        data: {
+          accessToken: userTokens.accessToken,
+          refreshToke: userTokens.refreshToken,
+          data: rest
+        },
+      });
+
+    })(req,res,next)
+
+    
 })
 
 const getNewAccessToken = catchAsync(
