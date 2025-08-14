@@ -66,4 +66,4 @@ const loadEnvVars = () : IEnvConfig => {
   };
 };
 
-export const envVars = loadEnvVars();
+export const envVars = loadEnvVars()

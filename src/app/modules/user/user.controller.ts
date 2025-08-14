@@ -32,7 +32,7 @@ const updateUser = catchAsync(
     const payload = req.body
     const verifyToken = req.user
     
-    const updatedUser = await userService.updateUser(userId, payload, verifyToken)
+    const updatedUser = await userService.updateUser(userId, payload, verifyToken as JwtPayload)
 
     sendResponse(res, {
       statusCode: httpStatusCodes.OK,
