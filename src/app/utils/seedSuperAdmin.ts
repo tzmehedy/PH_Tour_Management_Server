@@ -34,10 +34,10 @@ export const seedSuperAdmin = async() =>{
             auths: [authProvider]
         }
 
-        const superAdmin = await USER.create(payload)
+        await USER.create(payload)
 
         console.log("Successfully created super admin!! \n");
-        console.log(superAdmin)
+        
         
         
     } catch (error) {

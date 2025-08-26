@@ -20,7 +20,7 @@ export enum IIsActive{
 
 
 export interface IUser {
-  _id: Types.ObjectId
+  _id?: Types.ObjectId
   name: string;
   email: string;
   password?: string;
