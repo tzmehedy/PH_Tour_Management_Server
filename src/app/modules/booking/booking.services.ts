@@ -6,6 +6,8 @@ import { IBooking } from "./booking.interface"
 import { Booking } from './booking.model';
 import { Payment } from '../payment/payment.model';
 import { Tour } from '../tour/tour.model';
+import { ISSLCommerz } from '../sslCommerz/sslCommerz.interface';
+import { sslCommerzServices } from '../sslCommerz/sslCommerz.services';
 
 const getTransitionId=()=>{
     return `tran_id${Date.now()}${Math.floor(Math.random())}`
@@ -46,13 +48,14 @@ const createBookings = async(payload: Partial<IBooking>, userId:string)=>{
           { session }
         );
 
+        const amount = Number(tour.costFrom) * Number(bookingInfo[0].guest_count)
+
         const payment = await Payment.create(
           [
             {
               booking: bookingInfo[0]._id,
               transitionID,
-              amount:
-                Number(tour.costFrom) * Number(bookingInfo[0].guest_count),
+              amount: amount
             },
           ],
           { session }
@@ -73,10 +76,30 @@ const createBookings = async(payload: Partial<IBooking>, userId:string)=>{
           .populate("tour", "title description costFrom startDate endDate")
           .populate("payment");
 
+        const userName = (updatedBookingInfo?.user as any).name
+        const userEmail = (updatedBookingInfo?.user as any).email
+        const userPhone = (updatedBookingInfo?.user as any).phone
+        const userAddress = (updatedBookingInfo?.user as any).AddressFamily
+
+        const sslPayload : ISSLCommerz = {
+          amount: amount,
+          transactionID: transitionID,
+          name: userName,
+          email: userEmail,
+          phone: userPhone,
+          address: userAddress
+        }
+
+        const response = await sslCommerzServices.sslPaymentInit(sslPayload)
+        
+
         await session.commitTransaction()
         await session.endSession()
 
-        return updatedBookingInfo;
+        return {
+          payment: response.GatewayPageURL,
+          booking: updatedBookingInfo,
+        };
         
     } catch (error: any) {
         await session.abortTransaction()
