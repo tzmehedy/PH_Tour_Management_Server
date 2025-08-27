@@ -8,10 +8,12 @@ import { IIsActive } from '../modules/user/user.interface';
 
 export const checkAuth =
   (...AuthRole: string[]) =>
+   
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const accessToken = await req.headers.authorization;
-
+   
+      const accessToken = await req.cookies.accessToken;
+      
       if (!accessToken) {
         throw new AppError(403, "Forbidden Access");
       }
@@ -20,7 +22,7 @@ export const checkAuth =
         accessToken,
         envVars.JWT_ACCESS_SECRET_KEY
       )) as JwtPayload;
-
+      
       const isExistUser = await USER.findOne({ email: verifyToken.email });
 
       if (!isExistUser) {
