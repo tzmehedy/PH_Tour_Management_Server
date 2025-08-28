@@ -8,6 +8,7 @@ import {
 } from "./tour.validation";
 import { validateRequest } from "../../middlewares/validationRequest";
 import { IRole } from "../user/user.interface";
+import { multerUploader } from "../../config/multer.config";
 
 const router = express.Router();
 
@@ -39,7 +40,8 @@ router.delete(
 
 router.post(
   "/create",
-  checkAuth(IRole.ADMIN, IRole.SUPER_ADMIN),
+  // checkAuth(IRole.ADMIN, IRole.SUPER_ADMIN),
+  multerUploader.array("files"),
   validateRequest(createTourZodSchema),
   TourController.createTour
 );

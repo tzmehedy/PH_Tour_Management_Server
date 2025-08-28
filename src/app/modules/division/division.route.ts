@@ -8,12 +8,14 @@ import {
 } from "./division.validation";
 import { validateRequest } from "../../middlewares/validationRequest";
 import { IRole } from "../user/user.interface";
+import { multerUploader } from "../../config/multer.config";
 
 const router = Router()
 
 router.post(
     "/create",
-    checkAuth(IRole.ADMIN, IRole.SUPER_ADMIN),
+    // checkAuth(IRole.ADMIN, IRole.SUPER_ADMIN),
+    multerUploader.single("file"),
     validateRequest(createDivisionSchema),
     DivisionController.createDivision
 );
