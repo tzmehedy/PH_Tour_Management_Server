@@ -17,6 +17,10 @@ passport.use(new LocalStrategy({
           return done("User Does Not Exist!!!");
         }
 
+        if(!isExistUser.isVerified){
+            return done("User is not verified")
+        }
+
         const isUserGoogleAuthenticate = isExistUser.auths.some(
           (authsObject) => authsObject.provider === "Google"
         );
@@ -32,7 +36,6 @@ passport.use(new LocalStrategy({
           isExistUser.password as string
         );
 
-        console.log(isPasswordMatch)
 
         if (!isPasswordMatch) {
           return done("Password Does not match");

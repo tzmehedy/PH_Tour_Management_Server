@@ -3,6 +3,7 @@ import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 
 const createTour = async (payload: ITour) => {
+    
     const existingTour = await Tour.findOne({ title: payload.title });
     if (existingTour) {
         throw new Error("A tour with this title already exists.");

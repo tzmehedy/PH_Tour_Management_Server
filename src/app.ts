@@ -1,12 +1,12 @@
-import express, {Request, Response } from "express";
-import cors from "cors"
+import express, { Request, Response } from "express";
+import cors from "cors";
 import { router } from "./app/routes";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import notFoundRouteHandler from "./app/middlewares/notFoundRouteHandler";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import passport from "passport";
-import expressSession from "express-session"
-import "./app/config/passport"
+import expressSession from "express-session";
+import "./app/config/passport";
 
 export const app = express();
 
@@ -18,18 +18,14 @@ app.use(
   })
 );
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
+app.use(express.json());
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
+app.use(cookieParser());
 
-
-app.use(express.json())
-app.use(cors())
-app.use(cookieParser())
-
-app.use("/api/v1/", router)
-
-
+app.use("/api/v1/", router);
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
@@ -39,4 +35,4 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(globalErrorHandler);
 
-app.use(notFoundRouteHandler)
+app.use(notFoundRouteHandler);

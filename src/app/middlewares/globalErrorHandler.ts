@@ -6,18 +6,32 @@ import { handleDuplicateError } from "../helpers/duplicateError";
 import { IErrorSource } from "../interface/errors";
 import { handelCastError } from "../helpers/castErrorHandler";
 import { handelMongooseError } from "../helpers/mongooseErrorHandler";
+import { deleteFromCloudinary } from "../config/cloudinary.config";
+import { promise } from "zod";
 
 
 
 
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const globalErrorHandler = (
+export const globalErrorHandler = async(
   err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+    if(req.file){
+      await deleteFromCloudinary(req.file.path)
+    }
+
+    if(req.files && req.files.length){
+      const imageUrls = (req.files as Express.Multer.File[])?.map(
+        (file) => file.path
+      )
+
+      await Promise.all(imageUrls.map(imageUrl=> deleteFromCloudinary(imageUrl)))
+
+    }
    
     let statusCode = 500
     let message = "Something went wrong"

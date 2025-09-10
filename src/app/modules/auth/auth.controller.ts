@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { JwtPayload } from 'jsonwebtoken';
 import  httpStatusCodes  from 'http-status-codes';
 import { NextFunction, Request, Response } from "express";
@@ -15,7 +17,7 @@ const credentialsLogin = catchAsync(async(req:Request, res:Response, next: NextF
 
     // const loginInfo = await AuthServices.credentialsLogin(req.body)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    
     passport.authenticate("local", async(err:any, user:any, info:any )=>{
 
       if(err){
@@ -30,7 +32,6 @@ const credentialsLogin = catchAsync(async(req:Request, res:Response, next: NextF
 
       setCookies(res, userTokens);
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {password :pass, ...rest} = user.toObject()
 
       sendResponse(res, {
@@ -50,7 +51,7 @@ const credentialsLogin = catchAsync(async(req:Request, res:Response, next: NextF
 })
 
 const getNewAccessToken = catchAsync(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async (req: Request, res: Response, next: NextFunction) => {
 
     const refreshToken = req.cookies.refreshToken
@@ -70,7 +71,7 @@ const getNewAccessToken = catchAsync(
 );
 
 const logOut = catchAsync(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async (req: Request, res: Response, next: NextFunction) => {
     
     res.clearCookie("accessToken", {
@@ -95,7 +96,7 @@ const logOut = catchAsync(
 );
 
 const changedPassword = catchAsync(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user
     const oldPassword = req.body.oldPassword
@@ -112,8 +113,21 @@ const changedPassword = catchAsync(
   }
 );
 
+
+
+const forgetPassword = catchAsync(async(req:Request, res:Response, next: NextFunction)=>{
+  const {email} = req.body 
+  await AuthServices.forgotPassword(email)
+  sendResponse(res, {
+    statusCode: httpStatusCodes.OK,
+    success: true,
+    message: "Please check your email for to reset your password",
+    data: null
+  })
+})
+
 const googleCallback = catchAsync(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
   async (req: Request, res: Response, next: NextFunction) => {
     let redirectTo = req.query.state? req.query.state as string : "/" 
     if(redirectTo.startsWith("/")){
@@ -139,4 +153,5 @@ export const AuthControllers = {
   logOut,
   changedPassword,
   googleCallback,
+  forgetPassword,
 };
